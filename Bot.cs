@@ -30,6 +30,17 @@ namespace _69
                 Thread.Sleep(int.MaxValue);
             }
         }
+        public static string RockPaperScissors(string first, string second)
+    => (first, second) switch
+    {
+        ("rock", "paper") => "rock is covered by paper. Paper wins.",
+        ("rock", "scissors") => "rock breaks scissors. Rock wins.",
+        ("paper", "rock") => "paper covers rock. Paper wins.",
+        ("paper", "scissors") => "paper is cut by scissors. Scissors wins.",
+        ("scissors", "rock") => "scissors is broken by rock. Rock wins.",
+        ("scissors", "paper") => "scissors cuts paper. Scissors wins.",
+        (_, _) => "ничья"
+    };
 
 
         private async void OnMessageReceived(object sender, MessageEventArgs messageEventArgs)
@@ -40,21 +51,32 @@ namespace _69
                 Console.WriteLine(message);
                 var markup = new ReplyKeyboardMarkup(new[]
                 {
-                 new KeyboardButton("Привет"),
+                 new KeyboardButton("rock"),
 
-                 new KeyboardButton("Hello"),
+                 new KeyboardButton("paper"),
 
-                 new KeyboardButton("Heil"),
+                 new KeyboardButton("scissors"),
 
                 });
 
                 markup.OneTimeKeyboard = true;
-                await _bot.SendTextMessageAsync(message.Chat.Id, message.Text,replyMarkup:markup);
+                string[] arr =
+                {
+                    "rock",
+                    "scissors",
+                    "paper"
+                };
+                Random rnd = new Random();
+                
+                
+                await _bot.SendTextMessageAsync(message.Chat.Id, RockPaperScissors(message.Text, arr[rnd.Next(1, 3)]),replyMarkup:markup);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
+
+
         }
     }
 }
