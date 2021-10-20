@@ -22,7 +22,6 @@ namespace _69
         public void StartBot()
         {
             _bot.OnMessage += OnMessageReceived;
-            _bot.OnCallbackQuery += HandleCallbackQuery;
             _bot.StartReceiving();
 
             while (true)
@@ -32,15 +31,6 @@ namespace _69
             }
         }
 
-        [Obsolete]
-        private async void HandleCallbackQuery(object sender, CallbackQueryEventArgs callbackQueryEventArgs)
-        {
-            await _bot.AnswerCallbackQueryAsync(callbackQueryEventArgs.CallbackQuery.Id,
-                callbackQueryEventArgs.CallbackQuery.Data);
-            await _bot.EditMessageReplyMarkupAsync(callbackQueryEventArgs.CallbackQuery.Message.Chat.Id,
-                callbackQueryEventArgs.CallbackQuery.Message.MessageId, null);
-
-        }
 
         private async void OnMessageReceived(object sender, MessageEventArgs messageEventArgs)
         {
