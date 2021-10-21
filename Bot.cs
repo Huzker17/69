@@ -13,6 +13,7 @@ namespace _69
     {
         private readonly TelegramBotClient _bot;
 
+
         public Bot(string token)
         {
             _bot = new TelegramBotClient(token);
@@ -42,34 +43,72 @@ namespace _69
         (_, _) => "ничья"
     };
 
-
+        [Obsolete]
         private async void OnMessageReceived(object sender, MessageEventArgs messageEventArgs)
         {
             try
             {
                 Message message = messageEventArgs.Message;
-                Console.WriteLine(message);
-                var markup = new ReplyKeyboardMarkup(new[]
+                var startup = new ReplyKeyboardMarkup(new[]
                 {
-                 new KeyboardButton("rock"),
-
-                 new KeyboardButton("paper"),
-
-                 new KeyboardButton("scissors"),
-
-                });
-
-                markup.OneTimeKeyboard = true;
-                string[] arr =
+                 new KeyboardButton("/start") });
+                if (message.Text == "/start")
                 {
-                    "rock",
-                    "scissors",
-                    "paper"
-                };
-                Random rnd = new Random();
-                
-                
-                await _bot.SendTextMessageAsync(message.Chat.Id, RockPaperScissors(message.Text, arr[rnd.Next(1, 3)]),replyMarkup:markup);
+                    var chooseup = new ReplyKeyboardMarkup(new[]
+                    {
+                    new KeyboardButton("/game"),
+                    new KeyboardButton("/help")});
+                    message = messageEventArgs.Message;
+                    await _bot.SendTextMessageAsync(message.Chat.Id,message.Text, replyMarkup: chooseup);
+                }
+                if (message.Text == "/game")
+                {
+                    Console.WriteLine(message);
+                    var markup = new ReplyKeyboardMarkup(new[]
+                    {
+                             new KeyboardButton("rock"),
+
+                             new KeyboardButton("paper"),
+
+                              new KeyboardButton("scissors"),
+
+                        });
+                    markup.OneTimeKeyboard = true;
+                    await _bot.SendTextMessageAsync(message.Chat.Id, message.Text, replyMarkup: markup);
+
+                }
+                else if (message.Text == "/help")
+                {
+                    await _bot.SendTextMessageAsync(message.Chat.Id, "Суть данной игры заключается в выборе кнопки с названием фигуры из игры камень-ножницы-бумаги." +
+                        " Для начало игры пропишите /game в чат");
+
+                }
+                if(message.Text == "rock" || message.Text == "paper" || message.Text == "scissors")
+                {
+                    var markup = new ReplyKeyboardMarkup(new[]
+{
+                             new KeyboardButton("rock"),
+
+                             new KeyboardButton("paper"),
+
+                              new KeyboardButton("scissors"),
+                              new KeyboardButton("/stop"),
+
+                        });
+                    markup.OneTimeKeyboard = true;
+                    string[] arr =
+{
+                        "rock",
+                         "scissors",
+                        "paper"
+                        };
+                    Random rnd = new Random();
+                    await _bot.SendTextMessageAsync(message.Chat.Id, RockPaperScissors(message.Text, arr[rnd.Next(1, 3)]), replyMarkup: markup);
+                }
+                if(message.Text == "/stop")
+                {
+                    await _bot.SendTextMessageAsync(message.Chat.Id, message.Text, replyMarkup: startup);
+                }
             }
             catch (Exception ex)
             {
