@@ -95,6 +95,7 @@ namespace _69
                               new KeyboardButton("/stop"),
 
                         });
+
                     markup.OneTimeKeyboard = true;
                     string[] arr =
 {
